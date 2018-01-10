@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Price Alert</title>
+
+    {% include 'html_dependecies.html' %}
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/" title="Home">Price Alert</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/stores">Stores</a></li>
+                <li><a href="/alerts">Alerts</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/register">Sign up</a></li>
+                <li><a href="/login">Log in</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+<div class="content container">
+    {% block content %}
+
+    {% endblock %}
+</div>
+</body>
+</html>
