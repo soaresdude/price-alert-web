@@ -58,9 +58,13 @@ class Alert(object):
         self.item.load_price()
         self.last_checked = datetime.datetime.utcnow()
         self.save_to_mongo()
-        return self.item.price
+        return self.item.pricer
 
 
     def send_alert(self):
         if self.item.price < self.price_limit:
             self.send()
+
+    @classmethod
+    def search_email(cls, user_email):
+        return [cls(**elem) for elem in Database.find(AlertConstants.COLLECTION, query={'user_email': user_email})]

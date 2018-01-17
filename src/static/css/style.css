@@ -1,0 +1,10 @@
+.form-size {
+    max-width: 640px;
+    margin: 0 auto; /* The first value is for top and bottom and the second, for left and right. Auto means it'll adjust equally for both sides*/
+    background-color: #E9E9E9;
+    padding: 20px;
+    border: 1px solid #D5D5D5;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}

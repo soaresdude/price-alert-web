@@ -1,4 +1,9 @@
 {% extends "base.jinja2" %}
 {% block content %}
-<p>Hello World!</p>
+    <div class="jumbotron">
+        <h1>Price Alert Web</h1>
+        <p>Study case for a web based price alert service.</p>
+        <p>Sign up to get access for the full features it has to offer.</p>
+        <p><a class="btn btn-primary btn-lg" href="{{ url_for('users.register_user') }}" role="button">Sign up</a></p>
+    </div>
 {% endblock %}

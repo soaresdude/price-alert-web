@@ -16,3 +16,9 @@ def home():
 from src.models.users.views import user_blueprint
 app.register_blueprint(user_blueprint, url_prefix="/users")
 
+from src.models.alerts.views import alert_blueprint
+app.register_blueprint(alert_blueprint, url_prefix="/alerts")
+
+from src.models.stores.views import store_blueprint
+app.register_blueprint(store_blueprint, url_prefix="/stores")
+

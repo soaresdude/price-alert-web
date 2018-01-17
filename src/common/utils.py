@@ -12,7 +12,7 @@ class Utils(object):
     @staticmethod
     def encrypt_password(password):
         """
-        It receives the password from the form and encrypts it with pbkdf2
+        It receives the password from the form-size and encrypts it with pbkdf2
         :param password: sha512 password from the site
         :return: A sha512 pbkdf2 encrypted password
         """

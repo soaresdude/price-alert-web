@@ -3,6 +3,7 @@ from src.common.database import Database
 from src.common.utils import Utils
 import src.models.users.errors as UserErrors
 import src.models.users.constants as UserConstants
+from src.models.alerts.alert import Alert
 
 
 class User(object):
@@ -24,7 +25,7 @@ class User(object):
         :param password: sha512 password hash
         :return: True if it matched or False if else
         """
-        user_data = Database.find_one(collection='users', query={"email": email})
+        user_data = Database.find_one(UserConstants.COLLECTION, query={"email": email})
         if user_data is None:
             raise UserErrors.UserNotFoundException("User not found!")
         if not Utils.check_hashed_password(password, user_data['password']):
@@ -61,3 +62,9 @@ class User(object):
             "email": self.email,
             "password": self.password
         }
+    @classmethod
+    def search_email(cls, user_email):
+        return cls(**Database.find_one(UserConstants.COLLECTION, query={'email': user_email}))
+
+    def get_user_alerts(self):
+        return Alert.search_email(self.email)

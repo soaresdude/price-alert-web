@@ -12,11 +12,8 @@ class Store(object):
         self.query = query
         self._id = uuid.uuid4().hex if _id is None else _id
 
-
-
     def __repr__(self):
         return "<Store {}>".format(self.name)
-
 
     def json(self):
         return {
@@ -27,15 +24,12 @@ class Store(object):
             "query": self.query
         }
 
-
     @classmethod
     def get_store(cls, store_id):
         return cls(**Database.find_one(StoreConstants.COLLECTION, query={"_id": store_id}))
 
-
     def save_to_mongo(self):
         Database.insert(StoreConstants.COLLECTION, data=self.json())
-
 
     @classmethod
     def search_store_by_name(cls, store_name):
@@ -44,14 +38,35 @@ class Store(object):
     @classmethod
     def search_store_by_prefix(cls, url_prefix):
         return cls(**Database.find_one(StoreConstants.COLLECTION,
-                                       query={"url_prefix": {"$regex": "^{}".format(url_prefix)}})) # regexp for the store prefix
+                                       query={"url_prefix": {
+                                           "$regex": "^{}".format(url_prefix)}}))  # regexp for the store prefix
 
-
+    # TODO Deprecated method. Use search_store instead
     @classmethod
     def search_store_by_url(cls, store_url):
-        for char in range(0, len(store_url)+1):
+        for char in range(0, len(store_url) + 1):
             try:
-                store = cls.search_store_by_prefix(store_url[:char])
-                return store
+                return cls(**Database.find_one(StoreConstants.COLLECTION,
+                                               query={"url_prefix": {
+                                                   "$regex": '^{}'.format(store_url)}}))  # regexp for the store prefix
             except:
-                raise StoreErrors.StoreNotFound("Store not found!") # all methods in python return None by default
+                raise StoreErrors.StoreNotFound("Store not found!")  # all methods in python return None by default
+
+    @classmethod
+    def search_store(cls, store_id=None, store_name=None, url_prefix=None, store_url=None):
+        if store_url:
+            for char in range(0, len(store_url) + 1):
+                try:
+                    store = cls.search_store_by_prefix(store_url[:char])
+                    return store
+                except:
+                    raise StoreErrors.StoreNotFound("Store not found!") # all methods in python return None by default
+        elif store_id:
+            query = {"_id": store_id}
+        elif store_name:
+            query = {"name": store_name}
+        elif url_prefix:
+            query = {"url_prefix": {"$regex": "^{}".format(url_prefix)}}
+        else:
+            raise StoreErrors.StoreNotFound("Wrong parameters!")
+        return cls(**Database.find_one(StoreConstants.COLLECTION, query=query))

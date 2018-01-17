@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Price Alert</title>
 
-    {% include 'html_dependecies.html' %}
+    {% include 'html_dependecies.jinja2' %}
 
 </head>
 <body>
@@ -13,18 +13,32 @@
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
             <a class="navbar-brand" href="/" title="Home">Price Alert</a>
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/stores">Stores</a></li>
-                <li><a href="/alerts">Alerts</a></li>
+                <li><a href="{{ url_for('stores.index') }}">Stores</a></li>
+                <li><a href="{{ url_for('alerts.index') }}">Alerts</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/register">Sign up</a></li>
-                <li><a href="/login">Log in</a></li>
-            </ul>
+            {% if session['email'] %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ url_for('users.user_alerts') }}"><span class="glyphicon glyphicon-alert"></span> Your Alerts</a></li>
+                    <li><a href="{{ url_for('users.logout_user') }}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                </ul>
+            {% else %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ url_for ('users.register_user') }}"><span class="glyphicon glyphicon-user"></span> Sign up</a></li>
+                    <li><a href="{{ url_for ('users.login_user') }}"><span class="glyphicon glyphicon-log-in"></span> Log in</a></li>
+                </ul>
+            {% endif %}
         </div>
 
     </div>

@@ -12,7 +12,7 @@ class Item(object):
         self._id = uuid.uuid4().hex if _id is None else _id
         self.name = name
         self.url = url
-        store = Store.search_store_by_url(url)
+        store = Store.search_store(url)
         self.tag_name = store.tag_name
         self.query = store.query
         self.price = None if price is None else price
