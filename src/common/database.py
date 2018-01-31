@@ -29,3 +29,8 @@ class Database(object):
     @staticmethod
     def update(collection, query, data):
         Database.DATABASE[collection].update(query, data, upsert=True) # upsert checks if there's this query on database, if not, insert data
+
+
+    @staticmethod
+    def remove(collection, query):
+        Database.DATABASE[collection].remove(query)

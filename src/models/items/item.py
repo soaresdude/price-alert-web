@@ -12,7 +12,7 @@ class Item(object):
         self._id = uuid.uuid4().hex if _id is None else _id
         self.name = name
         self.url = url
-        store = Store.search_store(url)
+        store = Store.search_store(store_url=url)
         self.tag_name = store.tag_name
         self.query = store.query
         self.price = None if price is None else price
@@ -24,8 +24,7 @@ class Item(object):
 
     def load_price(self):
         request = requests.get(self.url)
-        content = request.content
-        soup = BeautifulSoup(content, "html.parser")
+        soup = BeautifulSoup(request.content, "html.parser")
         element = soup.find(self.tag_name, self.query)
         string_price = element.text.strip()
 
@@ -37,15 +36,17 @@ class Item(object):
 
 
     def save_to_mongo(self):
-        Database.insert(ItemConstants.COLLECTION, data=self.json())
+        Database.update(ItemConstants.COLLECTION, query={'_id': self._id}, data=self.json())
 
 
     def json(self):
         return {
+            "_id": self._id,
             "name": self.name,
-            "url": self.url
+            "url": self.url,
+            "price": self.price
         }
 
     @classmethod
     def get_item(cls, item_id):
-        return cls(**Database.find_one(ItemConstants.COLLECTION, {"_id": item_id}))
+        return cls(**Database.find_one(ItemConstants.COLLECTION, query={"_id": item_id}))

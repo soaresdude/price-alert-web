@@ -62,11 +62,14 @@ class Store(object):
                 except:
                     raise StoreErrors.StoreNotFound("Store not found!") # all methods in python return None by default
         elif store_id:
-            query = {"_id": store_id}
+            return cls(**Database.find_one(StoreConstants.COLLECTION, {"_id": store_id}))
         elif store_name:
-            query = {"name": store_name}
+            cls.find_one_store(query_name='name', query=store_name)
         elif url_prefix:
-            query = {"url_prefix": {"$regex": "^{}".format(url_prefix)}}
+            cls.find_one_store(query_name='url_prefix', query="{'$regex': '^{}'.format(url_prefix)}")
         else:
             raise StoreErrors.StoreNotFound("Wrong parameters!")
-        return cls(**Database.find_one(StoreConstants.COLLECTION, query=query))
+
+    @classmethod
+    def find_one_store(cls, query_name, query):
+        return cls(**Database.find_one(StoreConstants.COLLECTION, {"{}".format(query_name): query}))

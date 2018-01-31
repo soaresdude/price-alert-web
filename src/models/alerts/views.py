@@ -1,4 +1,7 @@
-from flask import Blueprint
+from flask import Blueprint, render_template, request, session, redirect, url_for
+from src.models.alerts.alert import Alert
+from src.models.items.item import Item
+import src.models.users.decorators as user_decorators
 
 alert_blueprint = Blueprint('alerts', __name__)
 
@@ -6,18 +9,53 @@ alert_blueprint = Blueprint('alerts', __name__)
 def index():
     return "Alert's index"
 
-@alert_blueprint.route('/new', methods=['POST'])
+@alert_blueprint.route('/new', methods=['POST', 'GET'])
+@user_decorators.requires_login
 def create_alert():
-    pass
+    if request.method == 'POST':
+        name = request.form['name']
+        url = request.form['url']
+        price_limit = float(request.form['price_limit'])
+
+        item = Item(name, url)
+        item.save_to_mongo() # saves before the alert because of the self.item = Item.get_item(item_id), that must have an entry before initialize alert object
+
+        alert = Alert(session['email'], price_limit, item._id)
+        alert.load_item_price() # load price already has save_to_mongo
+
+    return render_template('alerts/new_alert.jinja2')
+
 
 @alert_blueprint.route('/deactivate/<string:alert_id>')
+@user_decorators.requires_login
 def deactivate_alert(alert_id):
-    pass
+    Alert.find_alert(alert_id).deactivate()
+    return redirect(url_for('users.user_alerts'))
 
-@alert_blueprint.route('/alert/<string:alert_id>')
+
+@alert_blueprint.route('/delete/<string:alert_id>')
+@user_decorators.requires_login
+def delete_alert(alert_id):
+    Alert.find_alert(alert_id).delete()
+    return redirect(url_for('users.user_alerts'))
+
+
+@alert_blueprint.route('/activate/<string:alert_id>')
+@user_decorators.requires_login
+def deactivate_alert(alert_id):
+    Alert.find_alert(alert_id).activate()
+    return redirect(url_for('users.user_alerts'))
+
+
+@alert_blueprint.route('/<string:alert_id>')
+@user_decorators.requires_login
 def get_alert_page(alert_id):
-    pass
+    alert = Alert.find_alert()
+    render_template('alerts/alert.jinja2', alert=alert)
 
-@alert_blueprint.route('/user_alert/<string:user_id>')
-def get_user_alerts(user_id):
-    pass
+
+@alert_blueprint.route('/check_price/<string:alert_id>')
+def check_alert_price(alert_id):
+    Alert.find_alert(alert_id).load_item_price()
+    return redirect(url_for('.get_alert_page', alert_id=alert_id))
+

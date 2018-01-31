@@ -67,4 +67,4 @@ class User(object):
         return cls(**Database.find_one(UserConstants.COLLECTION, query={'email': user_email}))
 
     def get_user_alerts(self):
-        return Alert.search_email(self.email)
+        return Alert.find_alert(self.email)
