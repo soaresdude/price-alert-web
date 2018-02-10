@@ -13,6 +13,7 @@ def init_database():
 def home():
     return render_template('home.jinja2')
 
+
 from src.models.users.views import user_blueprint
 app.register_blueprint(user_blueprint, url_prefix="/users")
 

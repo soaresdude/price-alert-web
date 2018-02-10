@@ -29,7 +29,7 @@ class Store(object):
         return cls(**Database.find_one(StoreConstants.COLLECTION, query={"_id": store_id}))
 
     def save_to_mongo(self):
-        Database.insert(StoreConstants.COLLECTION, data=self.json())
+        Database.update(StoreConstants.COLLECTION, query={'_id': self._id}, data=self.json())
 
     @classmethod
     def search_store_by_name(cls, store_name):
@@ -73,3 +73,7 @@ class Store(object):
     @classmethod
     def find_one_store(cls, query_name, query):
         return cls(**Database.find_one(StoreConstants.COLLECTION, {"{}".format(query_name): query}))
+
+
+    def delete(self):
+        Database.remove(StoreConstants.COLLECTION, {'_id': self._id})
