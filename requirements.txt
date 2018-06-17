@@ -1,5 +1,5 @@
 Flask==1.0.2
 pymongo==3.6.1
 beautifulsoup4==4.6.0
-requests==2.18.4
+requests==2.19.1
 passlib==1.7.1
